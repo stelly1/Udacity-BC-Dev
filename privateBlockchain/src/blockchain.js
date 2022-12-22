@@ -73,12 +73,16 @@ class Blockchain {
       }
       block.time = new Date().getTime().toString().slice(0, -3);
       block.hash = SHA256(JSON.stringify(block)).toString();
-      let errors = self.validateChain();
+      //note from Udacity technical mentor to implement await method
+      let errors = await self.validateChain();
       if (errors.length > 0) {
         console.log("Invalid Chain");
         reject(errors);
       } else {
         this.chain.push(block);
+        //note from Udacity technical mentor amend chain
+        console.log("addblock - push block to chain");
+        self.height = self.height + 1;
         resolve(block);
       }
     });
@@ -144,14 +148,16 @@ class Blockchain {
         if (validMsg) {
           //create block if valid
           let blockInfo = new BlockClass.Block({
-            address: address,
             star: star,
+            owner: address,
           });
           let addedBlock = await self._addBlock(blockInfo);
           resolve(addedBlock);
         } else {
-          reject(new Error("Signature is Invalid - bc.js line 153"));
+          reject(new Error("Signature is Invalid - bc.js line 157"));
         }
+      } else {
+        reject("Over alloted time, move faster");
       }
     });
   }
@@ -203,12 +209,20 @@ class Blockchain {
     return new Promise((resolve, reject) => {
       //create a loop to check blocks
       self.chain.forEach(async (block) => {
-        let dataB = await block.getBData();
-        //console.log(dataB);
-        if (dataB.owner === address) {
-          stars.push(dataB);
-        } else {
-          reject("Block data is invalid");
+        try {
+          let dataB = await block.getBData();
+          //console.log(dataB);
+
+          //check for data & compare owner address w/star address
+          if (dataB) {
+            if (dataB.owner === address) {
+              stars.push(dataB);
+            } else {
+              console.log("Address data n/a - line 216 in bc.js");
+            }
+          }
+        } catch (e) {
+          console.log(e);
         }
       });
       resolve(stars);
@@ -227,14 +241,16 @@ class Blockchain {
     return new Promise(async (resolve, reject) => {
       self.chain.forEach(async (block) => {
         try {
-          await block.validateBlock();
+          //note from Udacity technical mentor to utilize validate
+          await block.validate();
         } catch (error) {
           errorLog.push(error);
         }
       });
 
       if (errorLog.length > 0) {
-        reject(errorLog);
+        //note from Udacity technical mentor to resolve rather than reject
+        resolve(errorLog);
       } else {
         resolve([]);
       }

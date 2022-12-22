@@ -39,13 +39,13 @@ class Block {
     let self = this;
     return new Promise((resolve, reject) => {
       // Save in auxiliary variable the current block hash & clear
-      const currentHash = this.hash;
-      this.hash = null;
+      const currentHash = self.hash;
+      self.hash = null;
       // Recalculate the hash of the Block
       // Comparing if the hashes changed
-      let encryptedHash = SHA256(JSON.stringify(this)).toString();
+      let encryptedHash = SHA256(JSON.stringify(self)).toString();
       // Returning the Block is not valid
-      this.hash = currentHash;
+      self.hash = currentHash;
       // Returning the Block is valid
       if (currentHash != encryptedHash) {
         reject(Error("Incorrect hash"));
@@ -65,18 +65,22 @@ class Block {
    *     or Reject with an error.
    */
   getBData() {
+    //get encoded block data
+    let block = this;
     return new Promise((resolve, reject) => {
-      //get encoded block data
-      let bData = this.body;
+      //check for genesis block
+      if (block.height == 0) {
+        resolve("Genesis Block");
+      }
       //decode block data
-      let dData = hex2ascii(bData);
+      let decodedData = hex2ascii(bData);
       //parse decoded retriever object
-      let pData = JSON.parse(dData);
+      let parsedData = JSON.parse(decodedData);
       //save data to block
-      if (pData && this.height > 0) {
-        resolve(pData);
+      if (parsedData) {
+        resolve(parsedData);
       } else {
-        reject(pData);
+        reject(Error("Add data - block.js line 83"));
       }
     });
   }
