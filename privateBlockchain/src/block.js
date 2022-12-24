@@ -72,15 +72,15 @@ class Block {
       if (block.height == 0) {
         resolve("Genesis Block");
       }
-      //decode block data
-      let decodedData = hex2ascii(bData);
+      //decode block data - Udacity technical mentor help change to block.body
+      let decodedData = hex2ascii(block.body);
       //parse decoded retriever object
       let parsedData = JSON.parse(decodedData);
       //save data to block
       if (parsedData) {
         resolve(parsedData);
       } else {
-        reject(Error("Add data - block.js line 83"));
+        reject(error("Add data - block.js line 83"));
       }
     });
   }

@@ -206,7 +206,7 @@ class Blockchain {
   getStarsByWalletAddress(address) {
     let self = this;
     let stars = [];
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       //create a loop to check blocks
       self.chain.forEach(async (block) => {
         try {
