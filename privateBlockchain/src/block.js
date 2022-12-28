@@ -46,10 +46,11 @@ class Block {
       let encryptedHash = SHA256(JSON.stringify(self)).toString();
       // Returning the Block is not valid
       self.hash = currentHash;
-      // Returning the Block is valid
-      if (currentHash != encryptedHash) {
-        reject(Error("Incorrect hash"));
+      // Returning the Block is valid to produce boolean result
+      if (currentHash !== encryptedHash) {
+        reject(false);
       } else {
+        //resolving promise as true/false per Udacity reviewer comments
         resolve(true);
       }
     });
@@ -80,7 +81,7 @@ class Block {
       if (parsedData) {
         resolve(parsedData);
       } else {
-        reject(error("Add data - block.js line 83"));
+        reject(error("Add data - block.js line 84"));
       }
     });
   }

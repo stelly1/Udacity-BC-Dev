@@ -73,7 +73,7 @@ class Blockchain {
       }
       block.time = new Date().getTime().toString().slice(0, -3);
       block.hash = SHA256(JSON.stringify(block)).toString();
-      //note from Udacity technical mentor to implement await method
+      //note from Udacity technical mentor to implement await method for async handling
       let errors = await self.validateChain();
       if (errors.length > 0) {
         console.log("Invalid Chain");
@@ -81,7 +81,7 @@ class Blockchain {
       } else {
         this.chain.push(block);
         //note from Udacity technical mentor amend chain
-        console.log("addblock - push block to chain");
+        console.log("addBlock - push block to chain");
         self.height = self.height + 1;
         resolve(block);
       }
